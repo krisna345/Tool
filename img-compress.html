@@ -39,6 +39,7 @@
             min-height: 100vh;
         }
 
+        /* Modern Navbar */
         .navbar {
             position: sticky;
             top: 0;
@@ -48,8 +49,6 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            background: var(--surface);
-            z-index: 10;
         }
 
         .theme-toggle {
@@ -64,6 +63,7 @@
             transform: rotate(180deg);
         }
 
+        /* Enhanced Compression Interface */
         .compression-interface {
             background: var(--surface);
             padding: var(--spacing-md);
@@ -73,6 +73,28 @@
             margin: 2rem auto;
         }
 
+        .preview-container {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            margin-top: 2rem;
+        }
+
+        .preview-img {
+            width: 100%;
+            height: auto;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .preview-img:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Modern Form Elements */
         .input-group {
             position: relative;
             margin: 2rem 0;
@@ -114,6 +136,7 @@
             font-weight: 600;
             transition: transform 0.2s ease;
             margin-top: 1rem;
+            width: 100%;
         }
 
         button:hover {
@@ -122,72 +145,32 @@
 
         .download-link {
             display: none;
-            background: var(--secondary);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
+            background-color: #10B981;
+            color: white !important;
+            padding: 12px 24px;
             border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            text-align: center;
-            margin-top: 1.5rem;
+            text-decoration: none !important;
             transition: transform 0.2s ease;
+            width: fit-content;
+            margin: 1.5rem auto 0;
         }
 
         .download-link:hover {
             transform: scale(1.05);
-        }
-
-        .preview-container {
-            display: grid;
-            gap: 2rem;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            margin-top: 2rem;
-        }
-
-        .preview-container > div {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: var(--bg);
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: var(--shadow);
-        }
-
-        .preview-img {
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            transition: transform 0.3s ease;
-            width: 100%;
-            max-width: 320px;
-            height: auto;
-            max-height: 300px;
-            object-fit: contain;
-            background: #fff;
-            margin-top: 0.5rem;
-        }
-
-        .preview-img:hover {
-            transform: translateY(-5px);
-        }
-
-        h3 {
-            margin-bottom: 0.5rem;
+            background-color: #059669;
         }
 
         @media (max-width: 768px) {
-            .compression-interface {
-                padding: 1rem;
-                margin: 1rem;
-            }
             .preview-container {
                 grid-template-columns: 1fr;
-                gap: 1.5rem;
             }
+            
             .navbar {
                 padding: 1rem;
+            }
+
+            .preview-img {
+                max-height: 300px;
             }
         }
     </style>
@@ -214,17 +197,16 @@
         <div class="preview-container">
             <div>
                 <h3>Original Image</h3>
-                <img id="originalPreview" class="preview-img" alt="Original Preview">
+                <img id="originalPreview" class="preview-img">
             </div>
             <div>
                 <h3>Compressed Image</h3>
-                <img id="compressedPreview" class="preview-img" alt="Compressed Preview">
+                <img id="compressedPreview" class="preview-img">
             </div>
         </div>
     </main>
 
     <script>
-        // Theme Toggle Functionality
         function toggleTheme() {
             document.documentElement.setAttribute('data-theme',
                 document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'
@@ -247,12 +229,8 @@
                 const reader = new FileReader();
                 reader.onload = function(event) {
                     originalPreview.src = event.target.result;
-                    originalPreview.style.display = 'block';
                 };
                 reader.readAsDataURL(file);
-                // Hide compressed preview and download link until compression
-                compressedPreview.src = '';
-                downloadLink.style.display = 'none';
             }
         });
 
@@ -281,11 +259,15 @@
                     canvas.toBlob(function(blob) {
                         const compressedUrl = URL.createObjectURL(blob);
                         compressedPreview.src = compressedUrl;
-                        compressedPreview.style.display = 'block';
                         
                         downloadLink.href = compressedUrl;
                         downloadLink.download = `compressed_${file.name}`;
                         downloadLink.style.display = 'inline-block';
+                        downloadLink.innerHTML = '✅ Download Compressed Image';
+                        
+                        const originalSize = (file.size / 1024).toFixed(2);
+                        const compressedSize = (blob.size / 1024).toFixed(2);
+                        console.log(`Original: ${originalSize}KB | Compressed: ${compressedSize}KB`);
                     }, file.type, quality);
                 };
             };
