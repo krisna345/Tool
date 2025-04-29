@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compress images online for free with our responsive image compression tool. Optimize JPEG and PNG files while maintaining quality. Perfect for web and mobile use.">
+    <meta name="keywords" content="image compressor, optimize images, JPEG compression, PNG compression, reduce file size">
+    <title>Responsive Image Compressor | Free Online Image Optimization</title>
+    <style>
+        :root {
+            --primary: #6366F1;
+            --secondary: #10B981;
+            --bg: #F8FAFC;
+            --text: #0F172A;
+            --surface: #FFFFFF;
+            --shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+            --spacing-md: 1.5rem;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1E293B;
+            --text: #F8FAFC;
+            --surface: #2D3748;
+            --shadow: 8px 8px 16px #1a202c, -8px -8px 16px #2d3748;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        body {
+            font-family: 'Inter', system-ui;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Modern Navbar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            backdrop-filter: blur(10px);
+            padding: var(--spacing-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        /* Enhanced Compression Interface */
+        .compression-interface {
+            background: var(--surface);
+            padding: var(--spacing-md);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            max-width: 1200px;
+            margin: 2rem auto;
+        }
+
+        .preview-container {
+            display: grid;
+            gap: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        }
+
+        .preview-img {
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s ease;
+        }
+
+        .preview-img:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Modern Form Elements */
+        .input-group {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px dashed var(--primary);
+            border-radius: 8px;
+            background: var(--bg);
+        }
+
+        .quality-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--bg);
+            border-radius: 4px;
+            margin: 1.5rem 0;
+        }
+
+        .quality-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .preview-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .navbar {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>ImageCompress Pro</h1>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓</button>
+    </nav>
+
+    <main class="compression-interface">
+        <!-- Existing Compression Interface Content -->
+        <div class="input-group">
+            <input type="file" id="imageInput" accept="image/*">
+        </div>
+
+        <div class="input-group">
+            <label>Compression Level: <span id="qualityValue">80</span>%</label>
+            <input type="range" class="quality-slider" id="qualityRange" min="1" max="100" value="80">
+        </div>
+
+        <button onclick="compressImage()">Compress Now</button>
+        <a id="downloadLink" class="download-link">Download Compressed Image</a>
+
+        <div class="preview-container">
+            <div>
+                <h3>Original Image</h3>
+                <img id="originalPreview" class="preview-img">
+            </div>
+            <div>
+                <h3>Compressed Image</h3>
+                <img id="compressedPreview" class="preview-img">
+            </div>
+        </div>
+    </main>
+
+    <!-- Original Script Content -->
+    <script>
+        // Add Theme Toggle Functionality
+        function toggleTheme() {
+            document.documentElement.setAttribute('data-theme',
+                document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light'
+            );
+        }
+
+        // Original Compression Logic
+        const qualityRange = document.getElementById('qualityRange');
+        const qualityValue = document.getElementById('qualityValue');
+        const originalPreview = document.getElementById('originalPreview');
+        const compressedPreview = document.getElementById('compressedPreview');
+        const downloadLink = document.getElementById('downloadLink');
+
+        qualityRange.addEventListener('input', (e) => {
+            qualityValue.textContent = e.target.value;
+        });
+
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    originalPreview.src = event.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        function compressImage() {
+            const file = document.getElementById('imageInput').files[0];
+            const quality = qualityRange.value / 100;
+
+            if (!file) {
+                alert('Please select an image first!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const img = new Image();
+                img.src = event.target.result;
+
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const ctx = canvas.getContext('2d');
+                    
+                    canvas.width = img.width;
+                    canvas.height = img.height;
+                    ctx.drawImage(img, 0, 0);
+
+                    canvas.toBlob(function(blob) {
+                        const compressedUrl = URL.createObjectURL(blob);
+                        compressedPreview.src = compressedUrl;
+                        
+                        downloadLink.href = compressedUrl;
+                        downloadLink.download = `compressed_${file.name}`;
+                        downloadLink.style.display = 'inline-block';
+                        
+                        const originalSize = (file.size / 1024).toFixed(2);
+                        const compressedSize = (blob.size / 1024).toFixed(2);
+                        console.log(`Original: ${originalSize}KB | Compressed: ${compressedSize}KB`);
+                    }, file.type, quality);
+                };
+            };
+            reader.readAsDataURL(file);
+        }
+    </script>
+</body>
+</html>
